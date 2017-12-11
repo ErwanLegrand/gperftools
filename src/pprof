@@ -3335,12 +3335,12 @@ sub CheckSymbolPage {
   my $command = ShellEscape(@URL_FETCHER, $url);
   open(SYMBOL, "$command |") or error($command);
   my $line = <SYMBOL>;
-  $line =~ s/\r//g;         # turn windows-looking lines into unix-looking lines
   close(SYMBOL);
   unless (defined($line)) {
     error("$url doesn't exist\n");
   }
 
+  $line =~ s/\r//g;         # turn windows-looking lines into unix-looking lines
   if ($line =~ /^num_symbols:\s+(\d+)$/) {
     if ($1 == 0) {
       error("Stripped binary. No symbols available.\n");
@@ -3393,9 +3393,9 @@ sub FetchProgramName() {
   my $command_line = ShellEscape(@URL_FETCHER, $url);
   open(CMDLINE, "$command_line |") or error($command_line);
   my $cmdline = <CMDLINE>;
-  $cmdline =~ s/\r//g;   # turn windows-looking lines into unix-looking lines
   close(CMDLINE);
   error("Failed to get program name from $url\n") unless defined($cmdline);
+  $cmdline =~ s/\r//g;  # turn windows-looking lines into unix-looking lines
   $cmdline =~ s/\x00.+//;  # Remove argv[1] and latters.
   $cmdline =~ s!\n!!g;  # Remove LFs.
   return $cmdline;
