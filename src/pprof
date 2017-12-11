@@ -245,6 +245,8 @@ Miscellaneous:
    --test              Run unit tests
    --help              This message
    --version           Version information
+   --curl-hide-errors  Hide cURL error messages
+   --curl-insecure     Turn off certificate checking by cURL
 
 Environment Variables:
    PPROF_TMPDIR        Profiles directory. Defaults to \$HOME/pprof
@@ -440,6 +442,8 @@ sub Init() {
              "no_strip_temp!" => \$main::opt_no_strip_temp,
              "test!"          => \$main::opt_test,
              "debug!"         => \$main::opt_debug,
+	     "curl-hide-errors!"  => \$main::opt_curl_hide_errors,
+	     "curl-insecure!" => \$main::opt_curl_insecure,
              # Undocumented flags used only by unittests:
              "test_stride=i"  => \$main::opt_test_stride,
       ) || usage("Invalid option(s)");
@@ -513,6 +517,14 @@ sub Init() {
     } else {
       $main::opt_text = 1;
     }
+  }
+
+  if (!$main::opt_curl_hide_errors) {
+    push @URL_FETCHER, "-S";
+  }
+
+  if ($main::opt_curl_insecure) {
+    push @URL_FETCHER, "-k";
   }
 
   if ($main::opt_test) {
